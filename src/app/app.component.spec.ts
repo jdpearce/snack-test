@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
+      imports: [RouterTestingModule, MatSnackBarModule, NoopAnimationsModule],
+      declarations: [AppComponent],
     }).compileComponents();
   });
 
@@ -20,16 +19,18 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'snack-test'`, () => {
+  it('should load the snackbar and go away after 1 second (this works)', (done) => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('snack-test');
-  });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('snack-test app is running!');
+    const button = fixture.debugElement.query(By.css('button'));
+
+    button.nativeElement.click();
+
+    expect(document.querySelector('simple-snack-bar')).toBeTruthy();
+
+    setTimeout(() => {
+      expect(document.querySelector('simple-snack-bar')).toBeFalsy();
+      done();
+    }, 1000);
   });
 });
